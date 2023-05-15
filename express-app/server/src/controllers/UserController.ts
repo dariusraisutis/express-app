@@ -1,7 +1,7 @@
 import { Request, NextFunction, Router, Response } from "express";
 import { IUserDto, IUserService } from "../services/UserService";
 import HttpException from "../utils/exceptions/HttpExcepton";
-import IController from "../interfaces/IController";
+import { IController } from "../interfaces/IController";
 import OAuthService, { ITokenPayload } from "../services/OAuthService";
 
 class UserController implements IController {

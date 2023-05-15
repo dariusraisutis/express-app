@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import IController from "../interfaces/IController";
+import { IController } from "../interfaces/IController";
 import { IProduct, IProductService } from "../services/ProductService";
 import HttpException from "../utils/exceptions/HttpExcepton";
 

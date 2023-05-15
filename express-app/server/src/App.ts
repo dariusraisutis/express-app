@@ -5,7 +5,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import mongoose from "mongoose";
-import IController from "./interfaces/IController";
+import { IController } from "./interfaces/IController";
 
 class App {
   private app: Application;
