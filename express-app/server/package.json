@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "start": "nodemon",
-    "debug": "nodemon --inspect src/App.ts"
+    "debug": "nodemon --inspect src/App.ts",
+    "dev" : "concurrently \"npm run start\" \"npm run client\"",
+    "client": "cd../client && npm run start"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +25,7 @@
     "argon2": "^0.30.3",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
+    "concurrently": "^8.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

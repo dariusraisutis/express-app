@@ -31,7 +31,8 @@ class App {
   }
 
   private initializeDatabase(): void {
-    const { MONGO_PATH } = process.env;
+    // const { MONGO_PATH } = process.env;
+    const MONGO_PATH = 'mongodb://127.0.0.1:27017/ecommerce';
     mongoose
       .connect(MONGO_PATH)
       .then(() => {
