@@ -6,6 +6,7 @@ import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 
 const useStyles = {
     card: {
@@ -26,9 +27,33 @@ const useStyles = {
 
 const Home = (): JSX.Element => {
     const { card, cardMedia, cardContent, button } = useStyles;
+    const handleShopNowClick = () => {
+        // Scroll to the product grid section
+       // document.getElementById('productGrid').scrollIntoView({ behavior: 'smooth' });
+      };
     return <>
         <Container sx={{ py: 8 }} maxWidth="md">
             <CssBaseline />
+            <Box>
+                <Typography
+                    component="h1"
+                    variant="h2"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                >
+                    FLexing Tees
+                </Typography>
+                <Typography variant="h5" align="center" color="text.secondary" paragraph sx={{ marginBottom: 2}}>
+                    Discover the latest trends and exclusive collections. Find the perfect t-shirt that reflects your style and
+                    elevates your wardrobe. Start your fashion journey with us today!
+                </Typography>
+                <Box sx={{ marginBottom: 2 }}>
+                    <Button variant="contained" color="primary" onClick={handleShopNowClick}>
+                        Shop Now
+                    </Button>
+                </Box>
+            </Box>
             <Grid container spacing={4}>
                 <Grid item xs={12} sm={6} md={4}>
                     <Card sx={card}>
