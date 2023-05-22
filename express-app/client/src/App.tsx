@@ -5,6 +5,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignUp from './components/SignUp';
 import Home from './components/Home';
 import Header from './components/Header';
+import ProductPage from './components/ProductPage';
+import ProductContainer from './components/ProductContainer';
+import Products from './components/Products';
 
 export type User = {
   _id: string;
@@ -18,7 +21,6 @@ function App() {
   return (
     <>
       <Header />
-      <div className="App">
         <BrowserRouter>
           <Routes>
             <Route path='/' element={ <Home /> } />
@@ -26,9 +28,11 @@ function App() {
             <Route path='/signup' element={<SignUp/>} />
             <Route path='/login' element={<Login />} />
             <Route path='/forgotpassword' element={<ForgotPassword />} />
+            <Route path='products' element={ <Products />}>
+              <Route path=':id' element={ <ProductPage  />} />
+            </Route>
           </Routes>
         </BrowserRouter>
-      </div>
     </>
   );
 }
