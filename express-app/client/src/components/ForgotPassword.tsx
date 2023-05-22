@@ -24,10 +24,10 @@ const ForgotPassword = (): JSX.Element => {
                 flexDirection: 'column',
                 alignItems: 'center',
             }} >
-                <Typography >
+                <Typography>
                     Forgot your password?
                 </Typography>
-                <Typography >
+                <Typography>
                     Enter your email and click submit
                 </Typography>
                 <TextField
