@@ -11,7 +11,6 @@ import { Link as RouterLink } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-
 export interface IProduct {
     _id: string;
     title: string;
@@ -22,6 +21,7 @@ export interface IProduct {
     brand: string;
     inStock: boolean;
     stock: number;
+    discount: number;
 }
 
 interface IProductContainerProps {
@@ -49,7 +49,6 @@ const ProductContainer = (): JSX.Element => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const { card, cardMedia, cardContent, button } = useStyles;
 
-    
     useEffect(() => {
         const getProducts = async(): Promise<void> => {
             try {
@@ -69,12 +68,13 @@ const ProductContainer = (): JSX.Element => {
     return <>
         <Grid container spacing={4} sx={{ marginTop: 8 }}>
             {
-                products.map(({ _id, title, description, image }: IProduct, index: Number) => (
+                products.map(({ _id, title, description, image, price, discount }: IProduct, index: Number) => (
                     <Grid item xs={12} sm={6} md={4} key={index.toString()}>
                         <RouterLink to={`/products/${_id}`} > 
                             <CardActionArea>
                                 <Card sx={card}>
                                     <CardMedia
+                                        component="img"
                                         sx={cardMedia}
                                         image={`/images/${image}`}
                                         title={title} >
@@ -86,11 +86,16 @@ const ProductContainer = (): JSX.Element => {
                                         <Typography variant="body2" color="textSecondary">
                                             {description}
                                         </Typography>
+                                        <Typography>
+                                            {`$ ${price}`}
+                                        </Typography>
+                                        <Typography>
+                                            Discount: {discount}
+                                        </Typography>
                                     </CardContent>
                                 </Card>
                             </CardActionArea>
                         </RouterLink>
-                        {/* </Link> */}
                     </Grid>
                 ))
             }

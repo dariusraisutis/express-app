@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import { Button, Divider, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
-const ProductDetails = ({ title, description, category, price, brand, inStock, stock, }: IProduct): JSX.Element => {
+const ProductDetails = ({ title, description, category, price, brand, inStock, stock, discount }: IProduct): JSX.Element => {
     const [quantity, setQuantity] = useState(1);
     const handleQuantityOnChange = (e: SelectChangeEvent<number>): void => {
         e.preventDefault();
@@ -49,7 +49,10 @@ const ProductDetails = ({ title, description, category, price, brand, inStock, s
                 <Typography m={2}>
                     In stock: {stock ? 'Yes' : 'No'}
                 </Typography>
-                <FormControl sx={{m: '2px', minWidth: 100 }}>
+                <Typography m={2}>
+                    Discount: {discount}
+                </Typography>
+                <FormControl sx={{ m: '2px', minWidth: 100 }}>
                     <InputLabel >Quantity</InputLabel>
                     <Select value={quantity} label="Quantity" onChange={handleQuantityOnChange}>
                         {numberOfItemsToPurchaseOption.map(({ name, value }) => (
@@ -91,14 +94,15 @@ const ProductPage = (): JSX.Element => {
             price: 0,
             brand: '',
             inStock: false,
-            stock: 0
+            stock: 0,
+            discount: 0
         });
     useEffect(() => {
         const getProduct = async (): Promise<void> => {
             try {
                 const { data } = await axios.get(`http://localhost:5000/api/products/getbyid/${id}`);
-                const { title, description, image, price, category, brand, inStock, stock } = data;
-                setProduct({ title, description, image, price, category, brand, inStock, stock } as IProduct);
+                const { title, description, image, price, category, brand, inStock, stock, discount } = data;
+                setProduct({ title, description, image, price, category, brand, inStock, stock, discount } as IProduct);
             } catch (error) {
                 console.log(error);
                 throw new Error(`Error getting product by id. ${error}`);

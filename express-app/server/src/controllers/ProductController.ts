@@ -21,8 +21,8 @@ class ProductController implements IController {
         next: NextFunction
     ): Promise<Response | void> => {
         try {
-            const { title, description, price, inStock, stock, brand, image, category } = body;
-            const productProps: IProduct = { title, description, price, inStock, stock, brand, image, category };
+            const { title, description, price, inStock, stock, brand, image, category, discount } = body;
+            const productProps: IProduct = { title, description, price, inStock, stock, brand, image, category, discount };
             const product = await this.productService.addNew(productProps);
     
             return res.status(201).send(product);
@@ -37,8 +37,8 @@ class ProductController implements IController {
         next: NextFunction
     ): Promise<Response | void> => {
         try {
-            const { _id, title, description, price, inStock, stock, brand, image, category } = body;
-            const productProps: IProduct = { _id, title, description, price, inStock, stock, brand, image, category };
+            const { _id, title, description, price, inStock, stock, brand, image, category,discount  } = body;
+            const productProps: IProduct = { _id, title, description, price, inStock, stock, brand, image, category, discount};
             const product = await this.productService.update(productProps);
             res.status(201).send(product);
         } catch ({ message }) {
@@ -52,8 +52,8 @@ class ProductController implements IController {
         next: NextFunction
     ): Promise<Response | void> => {
         try {
-            const { _id, title, description, price, inStock, stock, brand, image, category } = body;
-            const productProps: IProduct = { _id, title, description, price, inStock, stock, brand, image, category };
+            const { _id, title, description, price, inStock, stock, brand, image, category, discount } = body;
+            const productProps: IProduct = { _id, title, description, price, inStock, stock, brand, image, category, discount};
             await this.productService.delete(productProps);    
             return res.status(201).send(`Prduct has been deleted. Product Id ${ _id }`);
         } catch ({ message }) {

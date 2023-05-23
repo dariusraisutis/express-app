@@ -8,7 +8,8 @@ const productSchema = new Schema({
     inStock: { type: Boolean, required: true },
     brand: { type: String, required: false },
     image: { type: String, required: true },
-    stock: { type: Number, required: false }
+    stock: { type: Number, required: false },
+    discount: { type: Number, required: true }
 });
 
 export const Product = model('Product', productSchema);

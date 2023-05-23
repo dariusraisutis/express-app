@@ -9,6 +9,7 @@ export interface IProduct {
     stock?: number;
     brand?: string;
     image: string;
+    discount: number;
 }
 
 interface IProductDto {
@@ -21,6 +22,7 @@ interface IProductDto {
     stock?: number;
     brand?: string;
     image: string;
+    discount: number;
 }
 
 export interface IProductService {
@@ -37,9 +39,9 @@ class ProductService implements IProductService {
     public async addNew(productDto: IProductDto): Promise<IProduct> {
         try {
             const product = await Product.create(productDto);
-            const { _id, title, description, price, inStock, stock, brand, image } = product;
+            const { _id, title, description, price, inStock, stock, brand, image, discount } = product;
             const productId = _id.toString();
-            return { _id: productId, title, description, price, inStock, stock, brand, image } as IProduct;
+            return { _id: productId, title, description, price, inStock, stock, brand, image, discount } as IProduct;
         } catch (error: Error | unknown) {
             throw new Error(error instanceof Error
                 ? error.message
@@ -55,8 +57,8 @@ class ProductService implements IProductService {
             const product = await Product.findByIdAndUpdate(_id, rest, { new: true });
             if (!product) throw new Error('Could not find product.');
 
-            const { title, description, price, inStock, stock, brand, image } = product.toObject();
-            return { _id, title, description, price, inStock, stock, brand, image } as IProduct;
+            const { title, description, price, inStock, stock, brand, image, discount } = product.toObject();
+            return { _id, title, description, price, inStock, stock, brand, image, discount } as IProduct;
         } catch (error: Error | unknown) {
             console.error(error);
             throw new Error(error instanceof Error 
@@ -85,9 +87,9 @@ class ProductService implements IProductService {
         try {
             const products = await Product.find();
             return products.map((current) => {
-                const { _id, title, description, price, inStock, stock, brand, image, category } = current;
+                const { _id, title, description, price, inStock, stock, brand, image, category, discount } = current;
                 const productId = _id.toString();
-                return { _id: productId, title, description, price, inStock, stock, brand, image, category } as IProduct;
+                return { _id: productId, title, description, price, inStock, stock, brand, image, category, discount } as IProduct;
             });
         } catch (err: Error | unknown) {
             console.error(err);
@@ -102,8 +104,8 @@ class ProductService implements IProductService {
         try {
             const product = await Product.findById(id);
             if (!product) throw new Error('Could not find product');
-            const { title, description, price, inStock, stock, brand, image, category } = product;
-            return { _id: id, title, description, price, inStock, stock, brand, image, category } as IProduct;
+            const { title, description, price, inStock, stock, brand, image, category, discount } = product;
+            return { _id: id, title, description, price, inStock, stock, brand, image, category, discount } as IProduct;
         } catch (err: Error | unknown) {
             console.error(err);
             throw new Error(err instanceof Error
