@@ -6,8 +6,8 @@ import SignUp from './components/SignUp';
 import Home from './components/Home';
 import Header from './components/Header';
 import ProductPage from './components/ProductPage';
-import ProductContainer from './components/ProductContainer';
 import Products from './components/Products';
+import Checkout from './components/Checkout';
 
 export type User = {
   _id: string;
@@ -31,6 +31,7 @@ function App() {
             <Route path='products' element={ <Products />}>
               <Route path=':id' element={ <ProductPage  />} />
             </Route>
+            <Route path='/checkout' element={ <Checkout /> } />
           </Routes>
         </BrowserRouter>
     </>

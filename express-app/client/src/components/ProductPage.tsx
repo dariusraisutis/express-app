@@ -4,9 +4,15 @@ import { IProduct } from './ProductContainer';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import { Button, Divider, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 
-const ProductDetails = ({ title, description, category, price, brand, inStock, stock, discount }: IProduct): JSX.Element => {
+interface ICheckoutProps {
+    productId: string;
+    quantity: number;
+    total: number;
+}
+
+const ProductDetails = ({ _id, title, description, category, price, brand, inStock, stock, discount }: IProduct): JSX.Element => {
     const [quantity, setQuantity] = useState(1);
     const handleQuantityOnChange = (e: SelectChangeEvent<number>): void => {
         e.preventDefault();
@@ -26,6 +32,8 @@ const ProductDetails = ({ title, description, category, price, brand, inStock, s
         { name: '9', value: 9 },
         { name: '10', value: 10 }
     ];
+
+    let totalSum = price * quantity;
 
     return <>
         <Grid container direction="column" sx={{ height: '100%' }}>
@@ -62,12 +70,14 @@ const ProductDetails = ({ title, description, category, price, brand, inStock, s
                 </FormControl>
                 <Divider />
                 <Typography m={2}>
-                    Total Price: ${price * quantity}
+                    Total Price: ${totalSum}
                 </Typography>
             </Box>
-            <Button variant="contained" color="primary" sx={{ marginTop: 'auto' }} disabled={!inStock}>
-                Purchase
-            </Button>
+            <RouterLink to='/checkout' state={{ productId: _id, quantity, total: totalSum }} >
+                <Button variant="contained" color="primary" sx={{ marginTop: 'auto' }} disabled={!inStock}>
+                    Purchase
+                </Button>
+            </RouterLink>
         </Grid>
     </>;
 }
