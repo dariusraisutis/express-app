@@ -3,8 +3,20 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { IPaymentDetails } from "./Checkout";
+import { useState } from "react";
 
-const PaymentForm = (): JSX.Element => {
+interface IPaymentFormProps {
+    liftUpStateCallBack: (paymentDetails: IPaymentDetails) => void;
+}
+
+const PaymentForm = ({ liftUpStateCallBack }: IPaymentFormProps): JSX.Element => {
+    const [paymentDetails, setPaymentDetails] = useState<IPaymentDetails>({
+        cardNumber: 0,
+        nameOnCard: '',
+        expiryDate: new Date(),
+        cvv: 0
+    })
     return <>
         <Typography variant="h6" gutterBottom>
             Payment method

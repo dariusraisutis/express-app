@@ -3,13 +3,46 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import { IDeliveryDetails } from "./Checkout";
+import { useState } from "react";
 
-const AddressForm = (): JSX.Element => {
+// interface IDeliveryDetails {
+//     firstName: string;
+//     secondName: string;
+//     addressline: string;
+//     city: string;
+//     region: string;
+//     zipCode: string;
+//     country: string;
+// }
+
+interface IAddressFormProps {
+    liftUpStateCallBack: (deliveryDetails: IDeliveryDetails) => void;
+}
+
+const AddressForm = ({ liftUpStateCallBack }: IAddressFormProps): JSX.Element => {
+    const [formData, setFormData] = useState<IDeliveryDetails>({
+        firstName: '',
+        secondName: '',
+        addressline: '',
+        city: '',
+        region: '',
+        zipCode: '',
+        country: ''
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void =>  {
+        e.preventDefault();
+        const { currentTarget: {  name, value} } = e;
+        setFormData({...formData, [name]: value});
+        liftUpStateCallBack(formData);
+    }
+
     return <>
         <Typography variant="h6" gutterBottom>
             Shipping address
         </Typography>
-        <Grid container spacing={3}>
+        <Grid container component={'form'} spacing={3}>
             <Grid item xs={12} sm={6}>
                 <TextField
                     required
@@ -18,7 +51,8 @@ const AddressForm = (): JSX.Element => {
                     label="First name"
                     fullWidth
                     autoComplete="given-name"
-                    variant="standard">
+                    variant="standard"
+                    onChange={handleChange}>
                 </TextField>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -30,17 +64,19 @@ const AddressForm = (): JSX.Element => {
                     fullWidth
                     autoComplete="family-name"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12}>
                 <TextField
                     required
                     id="address1"
-                    name="address1"
+                    name="addressLine"
                     label="Address line 1"
                     fullWidth
                     autoComplete="shipping address-line1"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -51,6 +87,7 @@ const AddressForm = (): JSX.Element => {
                     fullWidth
                     autoComplete="shipping address-line2"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -62,26 +99,29 @@ const AddressForm = (): JSX.Element => {
                     fullWidth
                     autoComplete="shipping address-level2"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
                 <TextField
-                    id="state"
-                    name="state"
+                    id="region"
+                    name="region"
                     label="State/Province/Region"
                     fullWidth
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
                 <TextField
                     required
-                    id="zip"
-                    name="zip"
+                    id="zipCode"
+                    name="zipCode"
                     label="Zip / Postal code"
                     fullWidth
                     autoComplete="shipping postal-code"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -93,6 +133,7 @@ const AddressForm = (): JSX.Element => {
                     fullWidth
                     autoComplete="shipping country"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12}>

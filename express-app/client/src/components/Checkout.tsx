@@ -19,16 +19,16 @@ import { IProduct } from "./ProductContainer";
 
 
 
-const getContent = (step: number): JSX.Element => {
-    switch (step) {
-        case 0: return <AddressForm />;
-        case 1: return <PaymentForm />;
-        case 2: return <ReviewForm />;
-        default: throw new Error('Unexpected checkout step');
-    }
-}
+// const getContent = (step: number, checkoutDetails: ICheckoutDetails, liftUpStateCallBack: ()=>{}): JSX.Element => {
+//     switch (step) {
+//         case 0: return <AddressForm liftUpStateCallBack={liftUpStateCallBack}/>;
+//         case 1: return <PaymentForm />;
+//         case 2: return <ReviewForm {...checkoutDetails}/>;
+//         default: throw new Error('Unexpected checkout step');
+//     }
+// }
 
-interface IDeliveryDetails {
+export interface IDeliveryDetails {
     firstName: string;
     secondName: string;
     addressline: string;
@@ -38,14 +38,14 @@ interface IDeliveryDetails {
     country: string;
 }
 
-interface IPaymentDetails {
+export interface IPaymentDetails {
     nameOnCard: string;
     cardNumber: number;
     expiryDate: Date;
     cvv: number;
 }
 
-interface ICheckoutDetails {
+export interface ICheckoutDetails {
     products: IProduct[];
     deliveryDetails: IDeliveryDetails;
     paymentDetails: IPaymentDetails;
@@ -97,6 +97,21 @@ const Checkout = (): JSX.Element => {
     const handleBack = () => {
         setActiveStep(activeStep - 1);
     }
+
+    const addressFormLiftUpStateCallBack = (inputDeliveryDetails: IDeliveryDetails) => {
+        setCheckoutDetails(prevState => ({
+            ...prevState,
+            deliveryDetails: { ...inputDeliveryDetails }
+        }));
+    }
+
+    const paymentFormLiftUpStateCallBack = (inputPaymentDetails: IPaymentDetails) => {
+        setCheckoutDetails(prevState => ({
+            ...prevState,
+            paymentDetails: { ...inputPaymentDetails }
+        }));
+    }
+
     return <>
         <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
             <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
@@ -127,7 +142,13 @@ const Checkout = (): JSX.Element => {
                     </>
                 ) : (
                     <>
-                        {getContent(activeStep)}
+                        {
+                            activeStep === 0
+                             ? <AddressForm liftUpStateCallBack={addressFormLiftUpStateCallBack}/>
+                             : activeStep === 1
+                                ? <PaymentForm liftUpStateCallBack={paymentFormLiftUpStateCallBack} />
+                                : <ReviewForm {...checkoutDetails} />
+                        }
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                             {activeStep !== 0 && (
                                 <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
