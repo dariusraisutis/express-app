@@ -30,22 +30,22 @@ const products = [
   { name: 'Shipping', desc: '', price: 'Free' },
 ];
 const addresses = ['1 MUI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
-// const payments = [
-//   { name: 'Card type', detail: 'Visa' },
-//   { name: 'Card holder', detail: 'Mr John Smith' },
-//   { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-//   { name: 'Expiry date', detail: '04/2024' },
-// ];
+const payments = [
+  { name: 'Card type', detail: 'Visa' },
+  { name: 'Card holder', detail: 'Mr John Smith' },
+  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
+  { name: 'Expiry date', detail: '04/2024' },
+];
 
 const ReviewForm = ({ products, deliveryDetails, paymentDetails }: ICheckoutDetails): JSX.Element => {
-  const { nameOnCard, cardNumber, expiryDate, cvv } = paymentDetails;
-  const { firstName, secondName, addressline, city, region, country, zipCode } = deliveryDetails;
-  const payments = [
-    { name: 'Card type', detail: 'Visa' },
-    { name: 'Card holder', detail: `${nameOnCard}` },
-    { name: 'Card number', detail: `${cardNumber}` },
-    { name: 'Expiry date', detail: `${expiryDate}` }
-  ];
+  const { nameOnCard, cardNumber, expiryDate } = paymentDetails;
+  const { firstName, lastName } = deliveryDetails;
+  // const payments = [
+  //   { name: 'Card type', detail: 'Visa' },
+  //   { name: 'Card holder', detail: `${nameOnCard}` },
+  //   { name: 'Card number', detail: `${cardNumber}` },
+  //   { name: 'Expiry date', detail: `${expiryDate.getMonth() + 1}/${expiryDate.getFullYear()}` }
+  // ];
 
   const addresses = Object.entries(deliveryDetails)
     .map(([key, value]) => { return value; })
@@ -74,7 +74,7 @@ const ReviewForm = ({ products, deliveryDetails, paymentDetails }: ICheckoutDeta
         <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
           Shipping
         </Typography>
-        <Typography gutterBottom>{firstName} {secondName}</Typography>
+        <Typography gutterBottom>{firstName} {lastName}</Typography>
         <Typography gutterBottom>{addresses.join(', ')}</Typography>
       </Grid>
       <Grid item container direction="column" xs={12} sm={6}>

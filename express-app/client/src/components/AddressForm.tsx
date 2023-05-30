@@ -6,24 +6,15 @@ import Checkbox from "@mui/material/Checkbox";
 import { IDeliveryDetails } from "./Checkout";
 import { useState } from "react";
 
-// interface IDeliveryDetails {
-//     firstName: string;
-//     secondName: string;
-//     addressline: string;
-//     city: string;
-//     region: string;
-//     zipCode: string;
-//     country: string;
-// }
-
 interface IAddressFormProps {
     liftUpStateCallBack: (deliveryDetails: IDeliveryDetails) => void;
 }
 
 const AddressForm = ({ liftUpStateCallBack }: IAddressFormProps): JSX.Element => {
     const [formData, setFormData] = useState<IDeliveryDetails>({
+        userId: '',
         firstName: '',
-        secondName: '',
+        lastName: '',
         addressline: '',
         city: '',
         region: '',
@@ -33,8 +24,8 @@ const AddressForm = ({ liftUpStateCallBack }: IAddressFormProps): JSX.Element =>
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void =>  {
         e.preventDefault();
-        const { currentTarget: {  name, value} } = e;
-        setFormData({...formData, [name]: value});
+        const { currentTarget: { name, value} } = e;
+        setFormData({...formData, [name]: value });
         liftUpStateCallBack(formData);
     }
 

@@ -11,12 +11,20 @@ interface IPaymentFormProps {
 }
 
 const PaymentForm = ({ liftUpStateCallBack }: IPaymentFormProps): JSX.Element => {
-    const [paymentDetails, setPaymentDetails] = useState<IPaymentDetails>({
+    const [formData, setFormData] = useState<IPaymentDetails>({
         cardNumber: 0,
         nameOnCard: '',
         expiryDate: new Date(),
         cvv: 0
-    })
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void =>  {
+        e.preventDefault();
+        const { currentTarget: {  name, value} } = e;
+        setFormData({...formData, [name]: value});
+        liftUpStateCallBack(formData);
+    }
+
     return <>
         <Typography variant="h6" gutterBottom>
             Payment method
@@ -25,31 +33,36 @@ const PaymentForm = ({ liftUpStateCallBack }: IPaymentFormProps): JSX.Element =>
             <Grid item xs={12} md={6}>
                 <TextField
                     required
-                    id="cardName"
+                    id="nameOnCard"
+                    name="nameOnCard"
                     label="Name on card"
                     fullWidth
                     autoComplete="cc-name"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12} md={6}>
                 <TextField
                     required
                     id="cardNumber"
+                    name="cardNumber"
                     label="Card number"
                     fullWidth
                     autoComplete="cc-number"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12} md={6}>
                 <TextField
                     required
-                    id="expDate"
+                    id="expiryDate"
                     label="Expiry date"
                     fullWidth
                     autoComplete="cc-exp"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -61,6 +74,7 @@ const PaymentForm = ({ liftUpStateCallBack }: IPaymentFormProps): JSX.Element =>
                     fullWidth
                     autoComplete="cc-csc"
                     variant="standard"
+                    onChange={handleChange}
                 />
             </Grid>
             <Grid item xs={12}>

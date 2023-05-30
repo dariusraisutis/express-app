@@ -16,21 +16,12 @@ import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import ReviewForm from "./ReviewForm";
 import { IProduct } from "./ProductContainer";
-
-
-
-// const getContent = (step: number, checkoutDetails: ICheckoutDetails, liftUpStateCallBack: ()=>{}): JSX.Element => {
-//     switch (step) {
-//         case 0: return <AddressForm liftUpStateCallBack={liftUpStateCallBack}/>;
-//         case 1: return <PaymentForm />;
-//         case 2: return <ReviewForm {...checkoutDetails}/>;
-//         default: throw new Error('Unexpected checkout step');
-//     }
-// }
+import axios from "axios";
 
 export interface IDeliveryDetails {
+    userId: string;
     firstName: string;
-    secondName: string;
+    lastName: string;
     addressline: string;
     city: string;
     region: string;
@@ -52,8 +43,31 @@ export interface ICheckoutDetails {
 
 }
 
+interface IOrderProduct {
+    product: string;
+    quantity: number;
+}
+
+interface IOrderDeliveryAddress {
+    street: string;
+    city: string;
+    region: string;
+    country: string;
+    zip: string;
+}
+
+export interface IOrderDto {
+    user: string;
+    items: IOrderProduct[];
+    deliveryAddress: IOrderDeliveryAddress;
+    status: string;
+    isDelivered: boolean;
+    totalPrice: number;
+    createdAt: Date; 
+}
+
 const Checkout = (): JSX.Element => {
-    const props: ICheckoutDetails = {
+    const defaultState: ICheckoutDetails = {
         products: [
             {
                 _id: '',
@@ -69,8 +83,9 @@ const Checkout = (): JSX.Element => {
             }
         ],
         deliveryDetails: {
+            userId: '',
             firstName: '',
-            secondName: '',
+            lastName: '',
             addressline: '',
             city: '',
             region: '',
@@ -88,8 +103,9 @@ const Checkout = (): JSX.Element => {
     const { state } = useLocation();
     const { productId, quantity, total } = state;
     const [activeStep, setActiveStep] = useState(0);
-    const [checkoutDetails, setCheckoutDetails] = useState<ICheckoutDetails>(props);
+    const [checkoutDetails, setCheckoutDetails] = useState<ICheckoutDetails>(defaultState);
     const steps = ['Shipping address', 'Payment details', 'Review your order'];
+
     const handleNext = () => {
         setActiveStep(activeStep + 1);
     }
@@ -112,8 +128,37 @@ const Checkout = (): JSX.Element => {
         }));
     }
 
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            // TODO: add services for products, users, orders..
+            const { city, region, addressline, country, zipCode } = checkoutDetails.deliveryDetails;
+            const deliveryAddress: IOrderDeliveryAddress = {
+                city,
+                region,
+                zip: zipCode,
+                country,
+                street: addressline
+            };
+
+            const orderDto: IOrderDto = {
+                user: checkoutDetails.deliveryDetails.userId,
+                items: checkoutDetails.products.map((current) => { return { product: current._id, quantity: 5 }; }),
+                deliveryAddress,
+                status: 'Pending',
+                isDelivered: false,
+                createdAt: new Date(),
+                totalPrice: 25
+            };
+            const result = await axios.post('/api/orders', orderDto);
+            
+        } catch (error) {
+            throw new Error(`Error when placing order. ${error}`);
+        }
+    }
+
     return <>
-        <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+        <Container component="form" maxWidth="sm" sx={{ mb: 4 }} onSubmit={handleSubmit}>
             <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
                 <Typography component="h1" variant="h4" align="center">
                     Checkout
@@ -159,6 +204,7 @@ const Checkout = (): JSX.Element => {
                                 variant="contained"
                                 onClick={handleNext}
                                 sx={{ mt: 3, ml: 1 }}
+                                type={activeStep === steps.length - 1 ? 'submit': 'button'}
                             >
                                 {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
                             </Button>
