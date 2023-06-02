@@ -157,6 +157,7 @@ const Checkout = (): JSX.Element => {
         }
     }
 
+    let isLastStep = activeStep === steps.length - 1;
     return <>
         <Container component="form" maxWidth="sm" sx={{ mb: 4 }} onSubmit={handleSubmit}>
             <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
@@ -204,9 +205,9 @@ const Checkout = (): JSX.Element => {
                                 variant="contained"
                                 onClick={handleNext}
                                 sx={{ mt: 3, ml: 1 }}
-                                type={activeStep === steps.length - 1 ? 'submit': 'button'}
+                                type={isLastStep ? 'submit': 'button'}
                             >
-                                {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                                {isLastStep ? 'Place order' : 'Next'}
                             </Button>
                         </Box>
                     </>

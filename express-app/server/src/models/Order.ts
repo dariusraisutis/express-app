@@ -16,7 +16,7 @@ interface IOrder extends Document {
     country: string;
     zip: string;
   };
-  status: string;
+  orderStatus: string;
   totalPrice: number;
   createdAt: Date;
   isDelivered: boolean;
@@ -37,7 +37,7 @@ const orderSchema = new Schema<IOrder>({
     country: { type: String, required: true },
     zip: { type: String, required: true },
   },
-  status: { type: String, required: true, default: 'pending' },
+  orderStatus: { type: String, required: true, default: 'pending' },
   totalPrice: { type: Number, required: true },
   createdAt: { type: Date, default: Date.now },
   isDelivered: { type: Boolean, required: true }
