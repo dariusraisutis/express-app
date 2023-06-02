@@ -33,3 +33,5 @@ class OrderController implements IController {
         this.router.post(`${this.path}/create`, this.create);
     }
 }
+
+export default OrderController;
