@@ -48,6 +48,7 @@ class UserController implements IController {
                 email: email,
             };
             const token = OAuthService.generateToken(tokenPayload);
+            console.log(token);
             res.cookie('token', token, { maxAge: 60000 });
 
             return res.status(201).send(user);

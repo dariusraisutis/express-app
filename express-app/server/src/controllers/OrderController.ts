@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { IController } from "interfaces/IController";
-import { IOrderService } from "services/OrderService";
-import HttpException from "utils/exceptions/HttpExcepton";
+import { IController } from "../interfaces/IController";
+import { IOrderService } from "../services/OrderService";
+import HttpException from "../utils/exceptions/HttpExcepton";
 
 class OrderController implements IController {
     path: string;
@@ -17,9 +17,9 @@ class OrderController implements IController {
 
     public create = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const { orderStatus, isDelivered, deliveryAddress, createdAt, items, userId, totalPrice } = req.body;
-            const order = this.orderService.create(
-                { orderStatus, isDelivered, createdAt, items, userId: '', deliveryAddress, totalPrice}
+            const { status, isDelivered, deliveryAddress, createdAt, items, user, totalPrice } = req.body;
+            const order = await this.orderService.create(
+                { status, isDelivered, createdAt, items, user, deliveryAddress, totalPrice }
             );
 
             return res.status(201).send(order);

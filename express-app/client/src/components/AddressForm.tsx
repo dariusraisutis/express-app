@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { IDeliveryDetails } from "./Checkout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IAddressFormProps {
     liftUpStateCallBack: (deliveryDetails: IDeliveryDetails) => void;
@@ -15,18 +15,21 @@ const AddressForm = ({ liftUpStateCallBack }: IAddressFormProps): JSX.Element =>
         userId: '',
         firstName: '',
         lastName: '',
-        addressline: '',
+        street: '',
         city: '',
         region: '',
         zipCode: '',
         country: ''
     });
 
+    useEffect(() => {
+        liftUpStateCallBack(formData);
+    });
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void =>  {
         e.preventDefault();
         const { currentTarget: { name, value} } = e;
         setFormData({...formData, [name]: value });
-        liftUpStateCallBack(formData);
     }
 
     return <>
@@ -61,8 +64,8 @@ const AddressForm = ({ liftUpStateCallBack }: IAddressFormProps): JSX.Element =>
             <Grid item xs={12}>
                 <TextField
                     required
-                    id="address1"
-                    name="addressLine"
+                    id="street"
+                    name="street"
                     label="Address line 1"
                     fullWidth
                     autoComplete="shipping address-line1"

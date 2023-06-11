@@ -1,13 +1,13 @@
-import { IUser } from "models/User";
+import { IUser, User } from "../models/User";
 import { IProduct } from "./ProductService";
-import Order from "models/Order";
+import Order from "../models/Order";
 
 export interface IOrder {
     id: string;
-    user: IUser;
+    user: string;
     items: IProduct[];
     deliveryAddress: IDeliveryAddress;
-    orderStatus: string;
+    status: string;
     isDelivered: boolean;
     totalPrice: number;
     createdAt: Date;
@@ -23,10 +23,10 @@ export interface IDeliveryAddress {
 
 export interface IOrderDto {
     id?: string;
-    userId: string;
+    user: string;
     items: IProduct[];
     deliveryAddress: IDeliveryAddress;
-    orderStatus: string;
+    status: string;
     isDelivered: boolean;
     totalPrice: number;
     createdAt: Date;
@@ -43,15 +43,16 @@ class OrderService implements IOrderService {
     constructor() {}
     
     public async create(orderDto: IOrderDto): Promise<IOrder> {
-        try {
+        try {          
             const order = await Order.create(orderDto);
-            const { _id, items, deliveryAddress, orderStatus, isDelivered, totalPrice, createdAt, } = order;
+            const { _id, items, deliveryAddress, status, isDelivered, totalPrice, createdAt, user } = order;
+            
             const orderToReturn: IOrder = {
                 id: _id,
-                user: { firstName: '', lastName: '', isAdmin: false, email: '', password: ''},
+                user: '',
                 items: [],
                 deliveryAddress: { street: '', city: '', region: '', country: '', zipCode: '0' },
-                orderStatus,
+                status,
                 isDelivered,
                 totalPrice,
                 createdAt

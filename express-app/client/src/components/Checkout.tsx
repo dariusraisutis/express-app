@@ -10,7 +10,7 @@ import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
@@ -22,7 +22,7 @@ export interface IDeliveryDetails {
     userId: string;
     firstName: string;
     lastName: string;
-    addressline: string;
+    street: string;
     city: string;
     region: string;
     zipCode: string;
@@ -37,14 +37,14 @@ export interface IPaymentDetails {
 }
 
 export interface ICheckoutDetails {
-    products: IProduct[];
+    products: IOrderProduct[];
     deliveryDetails: IDeliveryDetails;
     paymentDetails: IPaymentDetails;
 
 }
 
 interface IOrderProduct {
-    product: string;
+    _id: string;
     quantity: number;
 }
 
@@ -53,7 +53,7 @@ interface IOrderDeliveryAddress {
     city: string;
     region: string;
     country: string;
-    zip: string;
+    zipCode: string;
 }
 
 export interface IOrderDto {
@@ -71,22 +71,14 @@ const Checkout = (): JSX.Element => {
         products: [
             {
                 _id: '',
-                title: '',
-                description: '',
-                category: '',
-                price: 0,
-                brand: '',
-                image: '',
-                inStock: false,
-                stock: 0,
-                discount: 0
+                quantity: 0
             }
         ],
         deliveryDetails: {
             userId: '',
             firstName: '',
             lastName: '',
-            addressline: '',
+            street: '',
             city: '',
             region: '',
             zipCode: '',
@@ -101,10 +93,38 @@ const Checkout = (): JSX.Element => {
     };
 
     const { state } = useLocation();
-    const { productId, quantity, total } = state;
+    // const { products, totalPrice } = state;
     const [activeStep, setActiveStep] = useState(0);
+    const [shippingDetails, setShippingDetails] = useState<IDeliveryDetails>(
+        {
+            userId: '',
+            firstName: '',
+            lastName: '',
+            street: '',
+            city: '',
+            region: '',
+            zipCode: '',
+            country: ''
+        }
+    );
+    const [paymentDetails, setPaymentDetails] = useState<IPaymentDetails>(
+        {
+            nameOnCard: '',
+            cardNumber: 0,
+            expiryDate: new Date(),
+            cvv: 0
+        }
+    );
+    const [products, setProducts] = useState<IOrderProduct[]>([]);
+
+
     const [checkoutDetails, setCheckoutDetails] = useState<ICheckoutDetails>(defaultState);
     const steps = ['Shipping address', 'Payment details', 'Review your order'];
+
+    useEffect(() => {
+        const { products } = state;
+        setProducts(products);
+    }, [setProducts]);
 
     const handleNext = () => {
         setActiveStep(activeStep + 1);
@@ -115,42 +135,38 @@ const Checkout = (): JSX.Element => {
     }
 
     const addressFormLiftUpStateCallBack = (inputDeliveryDetails: IDeliveryDetails) => {
-        setCheckoutDetails(prevState => ({
-            ...prevState,
-            deliveryDetails: { ...inputDeliveryDetails }
-        }));
+        setShippingDetails(inputDeliveryDetails);
     }
 
     const paymentFormLiftUpStateCallBack = (inputPaymentDetails: IPaymentDetails) => {
-        setCheckoutDetails(prevState => ({
-            ...prevState,
-            paymentDetails: { ...inputPaymentDetails }
-        }));
+        setPaymentDetails(inputPaymentDetails);
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             // TODO: add services for products, users, orders..
-            const { city, region, addressline, country, zipCode } = checkoutDetails.deliveryDetails;
+            const { city, region, street: addressline, country, zipCode } = shippingDetails;
             const deliveryAddress: IOrderDeliveryAddress = {
                 city,
                 region,
-                zip: zipCode,
+                zipCode,
                 country,
                 street: addressline
             };
 
             const orderDto: IOrderDto = {
-                user: checkoutDetails.deliveryDetails.userId,
-                items: checkoutDetails.products.map((current) => { return { product: current._id, quantity: 5 }; }),
+                user: '64609e781e11ea6d10e961f2',
+                items: products,
                 deliveryAddress,
                 status: 'Pending',
                 isDelivered: false,
                 createdAt: new Date(),
                 totalPrice: 25
             };
-            const result = await axios.post('/api/orders', orderDto);
+            console.log(orderDto)
+            const result = await axios.post('http://localhost:5000/api/orders/create', orderDto);
+            console.log(result);
             
         } catch (error) {
             throw new Error(`Error when placing order. ${error}`);

@@ -33,7 +33,7 @@ const ProductDetails = ({ _id, title, description, category, price, brand, inSto
         { name: '10', value: 10 }
     ];
 
-    let totalSum = price * quantity;
+    let totalPrice = price * quantity;
 
     return <>
         <Grid container direction="column" sx={{ height: '100%' }}>
@@ -61,19 +61,19 @@ const ProductDetails = ({ _id, title, description, category, price, brand, inSto
                     Discount: {discount}
                 </Typography>
                 <FormControl sx={{ m: '2px', minWidth: 100 }}>
-                    <InputLabel >Quantity</InputLabel>
+                    <InputLabel>Quantity</InputLabel>
                     <Select value={quantity} label="Quantity" onChange={handleQuantityOnChange}>
-                        {numberOfItemsToPurchaseOption.map(({ name, value }) => (
-                            <MenuItem value={value}>{name}</MenuItem>
+                        {numberOfItemsToPurchaseOption.map(({ name, value }, index: number) => (
+                            <MenuItem key={index} value={value}>{name}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
                 <Divider />
                 <Typography m={2}>
-                    Total Price: ${totalSum}
+                    Total Price: ${totalPrice}
                 </Typography>
             </Box>
-            <RouterLink to='/checkout' state={{ productId: _id, quantity, total: totalSum }} >
+            <RouterLink to='/checkout' state={{ products: [{ _id, quantity }], totalPrice }} >
                 <Button variant="contained" color="primary" sx={{ marginTop: 'auto' }} disabled={!inStock}>
                     Purchase
                 </Button>
@@ -111,8 +111,8 @@ const ProductPage = (): JSX.Element => {
         const getProduct = async (): Promise<void> => {
             try {
                 const { data } = await axios.get(`http://localhost:5000/api/products/getbyid/${id}`);
-                const { title, description, image, price, category, brand, inStock, stock, discount } = data;
-                setProduct({ title, description, image, price, category, brand, inStock, stock, discount } as IProduct);
+                const { _id, title, description, image, price, category, brand, inStock, stock, discount } = data;
+                setProduct({ _id, title, description, image, price, category, brand, inStock, stock, discount } as IProduct);
             } catch (error) {
                 console.log(error);
                 throw new Error(`Error getting product by id. ${error}`);

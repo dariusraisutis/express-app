@@ -3,49 +3,38 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ICheckoutDetails } from "./Checkout";
-
-const products = [
-  {
-    name: 'Product 1',
-    desc: 'A nice thing',
-    price: '$9.99',
-  },
-  {
-    name: 'Product 2',
-    desc: 'Another thing',
-    price: '$3.45',
-  },
-  {
-    name: 'Product 3',
-    desc: 'Something else',
-    price: '$6.51',
-  },
-  {
-    name: 'Product 4',
-    desc: 'Best thing of all',
-    price: '$14.11',
-  },
-  { name: 'Shipping', desc: '', price: 'Free' },
-];
-const addresses = ['1 MUI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
-];
+import axios from "axios";
+import { IProduct } from "./ProductContainer";
 
 const ReviewForm = ({ products, deliveryDetails, paymentDetails }: ICheckoutDetails): JSX.Element => {
   const { nameOnCard, cardNumber, expiryDate } = paymentDetails;
   const { firstName, lastName } = deliveryDetails;
-  // const payments = [
-  //   { name: 'Card type', detail: 'Visa' },
-  //   { name: 'Card holder', detail: `${nameOnCard}` },
-  //   { name: 'Card number', detail: `${cardNumber}` },
-  //   { name: 'Expiry date', detail: `${expiryDate.getMonth() + 1}/${expiryDate.getFullYear()}` }
-  // ];
+  const [checkoutProducts, setCheckoutProducts] = useState<IProduct[]>([]);
+
+  useEffect(() => {
+    const getProducts = async (): Promise<void> => {
+      const productPromises = products.map(({ _id }) => {
+        return axios.get(`http://localhost:5000/api/products/getbyid/${_id}`);
+      });
+      
+      const productDetails = await Promise.all(productPromises);
+      const test = productDetails.map(({ data }) => {
+        const { _id, title, description, image, price, category, brand, inStock, stock, discount } = data;
+        return { _id, title, description, image, price, category, brand, inStock, stock, discount };
+      });
+
+      setCheckoutProducts(test);
+
+    }
+  });
+  const payments = [
+    { name: 'Card type', detail: 'Visa' },
+    { name: 'Card holder', detail: `${nameOnCard}` },
+    { name: 'Card number', detail: `${cardNumber}` },
+    { name: 'Expiry date', detail: `${expiryDate.getMonth() + 1}/${expiryDate.getFullYear()}` }
+  ];
 
   const addresses = Object.entries(deliveryDetails)
     .map(([key, value]) => { return value; })
@@ -56,7 +45,7 @@ const ReviewForm = ({ products, deliveryDetails, paymentDetails }: ICheckoutDeta
       Order summary
     </Typography>
     <List disablePadding>
-      {products.map(({ title, description, price }) => (
+      {checkoutProducts.map(({ title, description, price }) => (
         <ListItem key={title} sx={{ py: 1, px: 0 }}>
           <ListItemText primary={title} secondary={description} />
           <Typography variant="body2">{price}</Typography>
