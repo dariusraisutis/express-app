@@ -1,7 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 import { IUser } from './User';
 
-interface IOrderItem {
+export interface IOrderItem {
   product: string;
   quantity: number;
 }

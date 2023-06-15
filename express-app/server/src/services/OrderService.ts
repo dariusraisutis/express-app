@@ -1,11 +1,11 @@
-import { IUser, User } from "../models/User";
+import { IUser, User, instanceOfUser } from "../models/User";
 import { IProduct } from "./ProductService";
-import Order from "../models/Order";
+import Order, { IOrderItem } from "../models/Order";
 
 export interface IOrder {
     id: string;
     user: string;
-    items: IProduct[];
+    items: IOrderItem[];
     deliveryAddress: IDeliveryAddress;
     status: string;
     isDelivered: boolean;
@@ -36,7 +36,7 @@ export interface IOrderService {
     create: (orderDto: IOrderDto)  => Promise<IOrder>;
     update: (orderDto: IOrderDto) => Promise<IOrder>;
     delete: (orderDto: IOrderDto) => Promise<void>;
-    get: (orderDto: IOrderDto) => Promise<IOrder>;
+    getOne: (orderDto: IOrderDto) => Promise<IOrder>;
 }
 
 class OrderService implements IOrderService {
@@ -49,9 +49,9 @@ class OrderService implements IOrderService {
             
             const orderToReturn: IOrder = {
                 id: _id,
-                user: '',
-                items: [],
-                deliveryAddress: { street: '', city: '', region: '', country: '', zipCode: '0' },
+                user: instanceOfUser(user) ? user._id : user,
+                items,
+                deliveryAddress,
                 status,
                 isDelivered,
                 totalPrice,
@@ -66,9 +66,10 @@ class OrderService implements IOrderService {
             );
         }
     }
+
     update: (orderDto: IOrderDto) => Promise<IOrder>;
     delete: (orderDto: IOrderDto) => Promise<void>;
-    get: (orderDto: IOrderDto) => Promise<IOrder>;
+    getOne: (orderDto: IOrderDto) => Promise<IOrder>;
 
 
 }

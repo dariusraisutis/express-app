@@ -7,6 +7,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { Avatar, CssBaseline, Grid, ThemeProvider, createTheme } from "@mui/material";
 import LockOutlined from "@mui/icons-material/LockOutlined"
+import UserService, { IUserLoginDto } from "../services/UserService";
 
 const Copyright = (props: any) => {
     return (
@@ -26,14 +27,24 @@ const Login = (): JSX.Element => {
         e.preventDefault();
         try {
             const formData = new FormData(e.currentTarget);
-            const formInput = {
-                email: formData.get('email'),
-                password: formData.get('password')
+            const email = formData.get('email');
+            const password = formData.get('password');
+
+            if (!email) {
+                throw new Error('Please enter email to login.');
+            } else if (!password) {
+                throw new Error('Please enter password to login.');
             }
-            const { data } = await axios.post('http://localhost:5000/api/users/login', formInput);
-            console.log(data);
-        } catch (error) {
-            console.error(error);
+
+            const userLoginDto: IUserLoginDto = {
+                email: email.toString(),
+                password: password.toString()
+            };
+
+            const user = await UserService.login(userLoginDto);
+            console.log(user);
+        } catch (error: Error | unknown) {
+            throw new Error(`${error instanceof Error ? error.message : error}`);
         }
     }
 

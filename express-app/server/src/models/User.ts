@@ -1,11 +1,16 @@
 import { Schema, model } from "mongoose";
 
 export interface IUser {
+    _id: string;
     firstName: string;
     lastName: string;
     email: string;
     password: string;
     isAdmin: boolean;
+}
+
+export const instanceOfUser = (object: any): object is IUser => {
+    return 'firstName' in object;
 }
 
 const userSchema = new Schema({
