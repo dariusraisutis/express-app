@@ -36,7 +36,7 @@ const AddressForm = ({ liftUpStateCallBack }: IAddressFormProps): JSX.Element =>
         <Typography variant="h6" gutterBottom>
             Shipping address
         </Typography>
-        <Grid container component={'form'} spacing={3}>
+        <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
                 <TextField
                     required

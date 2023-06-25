@@ -17,6 +17,7 @@ import PaymentForm from "./PaymentForm";
 import ReviewForm from "./ReviewForm";
 import { IProduct } from "./ProductContainer";
 import axios from "axios";
+import OrderSubmitted from "./OrderSubmitted";
 
 export interface IDeliveryDetails {
     userId: string;
@@ -63,7 +64,7 @@ export interface IOrderDto {
     status: string;
     isDelivered: boolean;
     totalPrice: number;
-    createdAt: Date; 
+    createdAt: Date;
 }
 
 const Checkout = (): JSX.Element => {
@@ -116,9 +117,9 @@ const Checkout = (): JSX.Element => {
         }
     );
     const [products, setProducts] = useState<IOrderProduct[]>([]);
-
-
     const [checkoutDetails, setCheckoutDetails] = useState<ICheckoutDetails>(defaultState);
+    const [isOrderSubmited, setIsOrderSubmited] = useState(false);
+    const [orderNumber, setOrderNumber] = useState('');
     const steps = ['Shipping address', 'Payment details', 'Review your order'];
 
     useEffect(() => {
@@ -126,7 +127,8 @@ const Checkout = (): JSX.Element => {
         setProducts(products);
     }, [setProducts]);
 
-    const handleNext = () => {
+    const handleNext = (e: React.SyntheticEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         setActiveStep(activeStep + 1);
     }
 
@@ -141,6 +143,8 @@ const Checkout = (): JSX.Element => {
     const paymentFormLiftUpStateCallBack = (inputPaymentDetails: IPaymentDetails) => {
         setPaymentDetails(inputPaymentDetails);
     }
+
+    
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -164,10 +168,11 @@ const Checkout = (): JSX.Element => {
                 createdAt: new Date(),
                 totalPrice: 25
             };
-            console.log(orderDto)
-            const result = await axios.post('http://localhost:5000/api/orders/create', orderDto);
-            console.log(result);
-            
+            const { data } = await axios.post('http://localhost:5000/api/orders/create', orderDto);
+            const { id } = data;
+            setOrderNumber(id);
+            console.log(data);
+            setIsOrderSubmited(true);
         } catch (error) {
             throw new Error(`Error when placing order. ${error}`);
         }
@@ -191,25 +196,16 @@ const Checkout = (): JSX.Element => {
                         ))
                     }
                 </Stepper>
-                {activeStep === steps.length ? (
-                    <>
-                        <Typography variant="h5" gutterBottom>
-                            Thank you for your order.
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            Your order number is #2001539. We have emailed your order
-                            confirmation, and will send you an update when your order has
-                            shipped.
-                        </Typography>
-                    </>
+                {isOrderSubmited ? (
+                    <OrderSubmitted orderNumber={orderNumber} />                   
                 ) : (
                     <>
                         {
                             activeStep === 0
-                             ? <AddressForm liftUpStateCallBack={addressFormLiftUpStateCallBack}/>
-                             : activeStep === 1
-                                ? <PaymentForm liftUpStateCallBack={paymentFormLiftUpStateCallBack} />
-                                : <ReviewForm {...checkoutDetails} />
+                                ? <AddressForm liftUpStateCallBack={addressFormLiftUpStateCallBack} />
+                                : isLastStep
+                                    ? <ReviewForm {...checkoutDetails} />
+                                    : <PaymentForm liftUpStateCallBack={paymentFormLiftUpStateCallBack} />
                         }
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                             {activeStep !== 0 && (
@@ -217,14 +213,24 @@ const Checkout = (): JSX.Element => {
                                     Back
                                 </Button>
                             )}
-                            <Button
-                                variant="contained"
-                                onClick={handleNext}
-                                sx={{ mt: 3, ml: 1 }}
-                                type={isLastStep ? 'submit': 'button'}
-                            >
-                                {isLastStep ? 'Place order' : 'Next'}
-                            </Button>
+                            {isLastStep ? (
+                                <Button
+                                    variant="contained"
+                                    type="submit"
+                                    sx={{ mt: 3, ml: 1 }}
+                                >
+                                    Place order
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    onClick={handleNext}
+                                    sx={{ mt: 3, ml: 1 }}
+                                    type="button"
+                                >
+                                    Next
+                                </Button>
+                            )}
                         </Box>
                     </>
                 )}
